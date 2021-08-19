@@ -39,8 +39,8 @@
             <el-tooltip content="删除用户" placement="top">
               <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUser(scope.row.id)"></el-button>
             </el-tooltip>
-            <el-tooltip content="用户设置" placement="top">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+            <el-tooltip content="分配角色" placement="top">
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -95,6 +95,23 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 分配角色的对话框 -->
+    <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%">
+      <div>
+        <p>当前的用户:{{userInfo.username}}</p>
+        <p>当前的角色:{{userInfo.role_name}}</p>
+        <p>分配新角色：
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -154,7 +171,15 @@ export default {
           { validator: checkEmail, trigger: 'blur' }]
       },
       //  查询到的用户信息
-      editForm: {}
+      editForm: {},
+      // 控制分配角色对话框的显示与隐藏
+      setRoleDialogVisible: false,
+      // 需要被分配角色的用户的信息
+      userInfo: {},
+      // 所有角色的数据列表
+      roleList: [],
+      // 已选泽的数据id值
+      selectedRoleId: ''
     }
   },
   created () {
@@ -249,6 +274,28 @@ export default {
       }
       this.$message.success('删除成功')
       this.getUserList()
+    },
+    async setRole (userInfo) {
+      this.setRoleDialogVisible = true
+      this.userInfo = userInfo
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取失败角色列表')
+      }
+      this.roleList = res.data
+    },
+    // 点击按钮，分配角色
+    async saveRoleInfo () {
+      if (!this.selectedRoleId) {
+        return this.$message.error('未选择')
+      }
+      const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectedRoleId })
+      if (res.meta.status !== 200) {
+        return this.$message.error('更新角色失败')
+      }
+      this.$message.success('更新角色成功')
+      this.getUserList()
+      this.setRoleDialogVisible = false
     }
   }
 }

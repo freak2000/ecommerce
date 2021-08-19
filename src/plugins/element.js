@@ -28,6 +28,10 @@ Vue.use(ElementUI.Switch)
 Vue.use(ElementUI.Tooltip)
 Vue.use(ElementUI.Pagination)
 Vue.use(ElementUI.Dialog)
+Vue.use(ElementUI.Tag)
+Vue.use(ElementUI.Tree)
+Vue.use(ElementUI.Select)
+Vue.use(ElementUI.Option)
 // Vue.use(Element)
 Vue.prototype.$message = ElementUI.Message
 Vue.prototype.$confirm = ElementUI.MessageBox.confirm
