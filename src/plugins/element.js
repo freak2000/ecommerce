@@ -4,6 +4,7 @@ import Vue from 'vue'
 // import { Input } from 'element-ui'
 // import { Message } from 'element-ui'
 import ElementUI from 'element-ui'
+import ZkTable from 'vue-table-with-tree-grid'
 
 Vue.use(ElementUI.Button)
 Vue.use(ElementUI.Form)
@@ -32,6 +33,8 @@ Vue.use(ElementUI.Tag)
 Vue.use(ElementUI.Tree)
 Vue.use(ElementUI.Select)
 Vue.use(ElementUI.Option)
+Vue.use(ElementUI.Cascader)
+Vue.use(ZkTable)
 // Vue.use(Element)
 Vue.prototype.$message = ElementUI.Message
 Vue.prototype.$confirm = ElementUI.MessageBox.confirm
